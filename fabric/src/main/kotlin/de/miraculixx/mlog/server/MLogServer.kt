@@ -2,26 +2,35 @@ package de.miraculixx.mlog.server
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import de.miraculixx.mlog.LOGGER
-import de.miraculixx.mlog.client.TemplateClient.responseCode
-import de.miraculixx.mlog.client.TemplateClient.responseInfo
-import de.miraculixx.mlog.client.TemplateClient.responseMod
+import de.miraculixx.mlog.client.MLogClient.responseCode
+import de.miraculixx.mlog.client.MLogClient.responseInfo
+import de.miraculixx.mlog.client.MLogClient.responseMod
+import de.miraculixx.mlog.global.APIImplementation
 import de.miraculixx.mlog.global.StringSuggestionProvider
 import de.miraculixx.mlog.permissionCode
 import de.miraculixx.mlog.web.WebClient
 import me.lucko.fabric.api.permissions.v0.Permissions
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.commands.Commands
+import net.minecraft.server.MinecraftServer
 import java.util.logging.Logger
 
-object TemplateServer : DedicatedServerModInitializer {
+object MLogServer : DedicatedServerModInitializer {
     private const val TYPE = "mod"
+    private lateinit var apiImplementation: APIImplementation
 
     private val confirmations: MutableMap<String, String> = mutableMapOf()
     private val cooldown: MutableSet<String> = mutableSetOf()
 
     override fun onInitializeServer() {
         LOGGER = Logger.getLogger("MLog-Server")
+
+
+        ServerLifecycleEvents.SERVER_STARTING.register { server ->
+            apiImplementation = APIImplementation(server.serverVersion, true)
+        }
 
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             dispatcher.register(

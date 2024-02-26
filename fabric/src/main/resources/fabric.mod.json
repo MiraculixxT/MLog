@@ -14,10 +14,10 @@
   "environment": "${environment}",
   "entrypoints": {
     "server": [
-      "de.miraculixx.mlog.server.TemplateServer"
+      "de.miraculixx.mlog.server.MLogServer"
     ],
     "client": [
-      "de.miraculixx.mlog.client.TemplateClient"
+      "de.miraculixx.mlog.client.MLogClient"
     ]
   },
   "mixins": [
