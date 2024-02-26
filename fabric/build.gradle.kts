@@ -4,10 +4,12 @@ plugins {
     `kotlin-script`
     `fabric-script`
     `publish-script`
+    `shadow-script`
 }
 
 dependencies {
     implementation(include(project(":core"))!!)
+    implementation(include(project(":api"))!!)
 }
 
 modrinth {
