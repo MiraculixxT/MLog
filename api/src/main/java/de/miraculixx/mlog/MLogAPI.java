@@ -52,7 +52,7 @@ abstract public class MLogAPI {
      * @return True if the registration was successful, false if the modInstance is already registered or does not match given mod id.
      * @see MLogAPI#unregisterLogSending(Object, String)
      */
-    abstract Boolean registerLogSending(Object modInstance, String modID, URL webhookURL, Set<File> files, Boolean zip);
+     public abstract Boolean registerLogSending(Object modInstance, String modID, URL webhookURL, Set<File> files, Boolean zip);
 
     /**
      * Unregister your mod/plugin from MLog.
@@ -68,5 +68,5 @@ abstract public class MLogAPI {
      * @param modID The unique ID/name of your mod/plugin.
      * @return True if the unregistration was successful, false if the modInstance is not registered or does not match given mod id.
      */
-    abstract Boolean unregisterLogSending(Object modInstance, String modID);
+    public abstract Boolean unregisterLogSending(Object modInstance, String modID);
 }
