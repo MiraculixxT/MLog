@@ -24,7 +24,7 @@ object TemplateServer : DedicatedServerModInitializer {
 
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             dispatcher.register(
-                Commands.literal("mlog")
+                Commands.literal("mlog-server")
                     .executes { ctx ->
                         ctx.source.target().responseInfo(TYPE)
                         1

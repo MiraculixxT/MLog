@@ -13,7 +13,7 @@ object RequestCommand : CommandResponses {
     private val confirmations: MutableMap<String, String> = mutableMapOf()
     private val cooldown: MutableSet<String> = mutableSetOf()
 
-    private val command = commandTree("mlogs") {
+    private val command = commandTree("mlog-server") {
         anyExecutor { sender, _ ->
             sender.target().responseInfo(TYPE)
         }
