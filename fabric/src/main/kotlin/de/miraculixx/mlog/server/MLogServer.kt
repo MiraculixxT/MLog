@@ -14,7 +14,6 @@ import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.commands.Commands
-import net.minecraft.server.MinecraftServer
 import java.util.logging.Logger
 
 object MLogServer : DedicatedServerModInitializer {
