@@ -19,6 +19,7 @@ object RequestCommand : CommandResponses {
         }
 
         stringArgument("plugin") {
+            withPermission(permissionCode)
             replaceSuggestions(ArgumentSuggestions.stringCollection { WebClient.logBackData.keys })
 
             anyExecutor { sender, args ->

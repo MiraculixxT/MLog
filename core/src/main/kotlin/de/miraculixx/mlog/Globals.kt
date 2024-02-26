@@ -6,3 +6,5 @@ import java.io.File
 
 lateinit var configFolder: File
 val prefix = cmp("MLog", cHighlight) + cmp(" >>", "#555555") + cmp(" ")
+
+val permissionCode = "mlog.send"
