@@ -19,10 +19,3 @@ fun RawMessage.toComponent(): Component {
             followMessage?.toComponent()?.let { append(it) }
         }
 }
-
-fun RawMessage.toRaw(): String {
-    return buildString {
-        append(message)
-        followMessage?.toRaw()?.let { append(it) }
-    }
-}

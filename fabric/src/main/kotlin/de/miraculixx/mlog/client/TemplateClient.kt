@@ -1,6 +1,7 @@
 package de.miraculixx.mlog.client
 
 import com.mojang.brigadier.arguments.StringArgumentType
+import de.miraculixx.mlog.LOGGER
 import de.miraculixx.mlog.global.StringSuggestionProvider
 import de.miraculixx.mlog.interfaces.CommandResponses
 import de.miraculixx.mlog.web.WebClient
@@ -10,14 +11,14 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import java.util.logging.Logger
 
 object TemplateClient : ClientModInitializer, CommandResponses {
-    val LOGGER = Logger.getLogger("MLog-Client")
     private const val TYPE = "mod"
 
     private val confirmations: MutableMap<String, String> = mutableMapOf()
 
     override fun onInitializeClient() {
+        LOGGER = Logger.getLogger("MLog-Client")
 
-        ClientCommandRegistrationCallback.EVENT.register { dispatcher, registry ->
+        ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
             dispatcher.register(
                 ClientCommandManager.literal("mlog")
                     .executes { ctx ->

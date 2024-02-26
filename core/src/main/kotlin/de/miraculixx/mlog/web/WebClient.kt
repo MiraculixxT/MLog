@@ -1,8 +1,10 @@
 package de.miraculixx.mlog.web
 
+import de.miraculixx.mlog.LOGGER
 import de.miraculixx.mlog.configFolder
-import de.miraculixx.mlog.consoleAudience
 import de.miraculixx.mlog.prefix
+import de.miraculixx.mlog.utils.cmp
+import de.miraculixx.mlog.utils.sendMessage
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
@@ -10,12 +12,11 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.kyori.adventure.text.Component
 import java.io.File
 
 object WebClient {
     private var ktor: HttpClient? = null
-    val json = Json {
+    private val json = Json {
         prettyPrint = false
         encodeDefaults = true
     }
@@ -44,7 +45,7 @@ object WebClient {
                     })
                 )
             }?.status ?: return Response.INTERNAL_ERROR
-            consoleAudience.sendMessage(prefix.append(Component.text("Webhook endpoint responded with code $code")))
+            LOGGER.sendMessage(prefix + cmp("Webhook endpoint responded with code $code"))
             when {
                 code.isSuccess() -> Response.SUCCESS
                 code == HttpStatusCode.Forbidden -> Response.INVALID_CODE //403

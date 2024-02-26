@@ -1,5 +1,7 @@
 package de.miraculixx.mlog.utils
 
+import java.util.logging.Logger
+
 
 const val cHighlight = "#5555FF"
 const val cBase = "#AAAAAA"
@@ -20,6 +22,13 @@ data class RawMessage(
     var followMessage: RawMessage? = null
 ) {
     operator fun plus(other: RawMessage) = apply { followMessage = other }
+
+    fun toRaw(): String {
+        return buildString {
+            append(message)
+            followMessage?.toRaw()?.let { append(it) }
+        }
+    }
 }
 
 fun cmp(text: String, color: String = cBase, bold: Boolean = false, italic: Boolean = false, strikethrough: Boolean = false, underlined: Boolean = false) =
@@ -31,3 +40,7 @@ fun consoleCmp(text: String, color: String = cBase, bold: Boolean = false, itali
 typealias Target = (RawMessage) -> Unit
 
 fun Target.sendMessage(message: RawMessage) = invoke(message)
+
+fun Logger.sendMessage(message: RawMessage) {
+    info(message.toRaw())
+}

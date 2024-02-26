@@ -1,6 +1,7 @@
 package de.miraculixx.mlog.server
 
 import com.mojang.brigadier.arguments.StringArgumentType
+import de.miraculixx.mlog.LOGGER
 import de.miraculixx.mlog.client.TemplateClient.responseCode
 import de.miraculixx.mlog.client.TemplateClient.responseInfo
 import de.miraculixx.mlog.client.TemplateClient.responseMod
@@ -14,13 +15,13 @@ import net.minecraft.commands.Commands
 import java.util.logging.Logger
 
 object TemplateServer : DedicatedServerModInitializer {
-    val LOGGER = Logger.getLogger("MLog-Server")
     private const val TYPE = "mod"
 
     private val confirmations: MutableMap<String, String> = mutableMapOf()
     private val cooldown: MutableSet<String> = mutableSetOf()
 
     override fun onInitializeServer() {
+        LOGGER = Logger.getLogger("MLog-Server")
 
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             dispatcher.register(

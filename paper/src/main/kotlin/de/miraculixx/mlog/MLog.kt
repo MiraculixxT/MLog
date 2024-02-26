@@ -21,6 +21,7 @@ class MLog : KPaper() {
 
     override fun startup() {
         CommandAPI.onEnable()
+
     }
 
     override fun shutdown() {
