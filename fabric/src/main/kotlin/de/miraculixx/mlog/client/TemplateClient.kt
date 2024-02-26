@@ -1,4 +1,4 @@
-package de.miraculixx.template.client
+package de.miraculixx.mlog.client
 
 import net.fabricmc.api.ClientModInitializer
 

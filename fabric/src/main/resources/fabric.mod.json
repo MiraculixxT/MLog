@@ -6,7 +6,7 @@
   "description": "${description}",
   "author": "${author}",
   "license": "${license}",
-  "icon": "assets/${modid}/icon.png",
+  "icon": "assets/mlog/icon.png",
   "contact": {
     "homepage": "https://modrinth.com/mod/${modrinth}",
     "issues": "https://dc.mutils.net"

@@ -1,4 +1,4 @@
-package de.miraculixx.template.server
+package de.miraculixx.mlog.server
 
 import net.fabricmc.api.DedicatedServerModInitializer
 
