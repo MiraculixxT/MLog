@@ -12,7 +12,7 @@ description = properties["description"] as String
 
 val gameVersion by properties
 val foliaSupport = properties["foliaSupport"] as String == "true"
-val projectName = properties["name"] as String
+val projectName = properties["projectName"] as String
 
 repositories {
     mavenCentral()

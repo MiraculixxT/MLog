@@ -83,7 +83,7 @@ tasks.processResources {
             mapOf(
                 "modid" to properties["modid"] as String,
                 "version" to version,
-                "name" to properties["name"] as String,
+                "name" to properties["projectName"] as String,
                 "description" to description,
                 "author" to properties["authors"] as String,
                 "license" to properties["license"] as String,
