@@ -2,15 +2,15 @@ package de.miraculixx.mlog.interfaces
 
 import de.miraculixx.mlog.prefix
 import de.miraculixx.mlog.utils.*
+import de.miraculixx.mlog.utils.Target
 import de.miraculixx.mlog.web.WebClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.kyori.adventure.audience.Audience
 import java.io.File
 
-interface CommandResponses: LogPayloads {
-    fun Audience.responseInfo(type: String) {
+interface CommandResponses : LogPayloads {
+    fun Target.responseInfo(type: String) {
         sendMessage(
             prefix + cmp(
                 "Easily send important logs and $type configurations to their developers to speed up the debugging and support process.\n" +
@@ -21,7 +21,7 @@ interface CommandResponses: LogPayloads {
         sendMessage(prefix + cmp("Usage: ") + cmp("/mlogs <$type> <code>", cMark))
     }
 
-    fun Audience.responseMod(mod: String, type: String) {
+    fun Target.responseMod(mod: String, type: String) {
         val data = WebClient.logBackData[mod]
         if (data == null) {
             noSupport(mod)
@@ -31,14 +31,14 @@ interface CommandResponses: LogPayloads {
         printFiles(data.files)
     }
 
-    fun Audience.responseCode(mod: String, code: String, cooldown: MutableSet<String>, confirmations: MutableMap<Audience, String>) {
+    fun Target.responseCode(mod: String, code: String, cooldown: MutableSet<String>, executor: String, confirmations: MutableMap<String, String>) {
         val data = WebClient.logBackData[mod]
         if (data == null) {
             noSupport(mod)
             return
         }
 
-        if (confirmations.containsKey(this)) {
+        if (confirmations.containsKey(executor)) {
             sendMessage(prefix + cmp("Sending files to the developer..."))
             CoroutineScope(Dispatchers.Default).launch {
                 val finalFiles = prepareFiles(data.files, data.zip)
@@ -47,6 +47,7 @@ interface CommandResponses: LogPayloads {
                         cooldown.add(mod)
                         sendMessage(prefix + cmp("Files sent successfully!", cSuccess))
                     }
+
                     WebClient.Response.INVALID_CODE -> sendMessage(prefix + cmp("The code you entered is invalid for $mod!", cError))
                     WebClient.Response.INTERNAL_ERROR -> sendMessage(prefix + cmp("An internal error occurred while sending the files! Please check console for more information", cError))
                     WebClient.Response.API_ERROR -> sendMessage(prefix + cmp("The endpoint responded with an error. Please notify the developers about this behaviour!", cError))
@@ -56,15 +57,15 @@ interface CommandResponses: LogPayloads {
             sendMessage(prefix + cmp("You are about to send the following files to the developer of ") + cmp(mod, cMark) + cmp(":"))
             printFiles(data.files)
             sendMessage(prefix + cmp("Confirm by entering the command again!", cSuccess))
-            confirmations[this] = mod
+            confirmations[executor] = mod
         }
     }
 
-    private fun Audience.printFiles(files: Set<File>) {
+    private fun Target.printFiles(files: Set<File>) {
         files.forEach { sendMessage(cmp("· ", cHighlight) + cmp(it.path)) }
     }
 
-    private fun Audience.noSupport(mod: String) {
+    private fun Target.noSupport(mod: String) {
         sendMessage(prefix + cmp("This mod does not support easy logs yet!", cError))
         sendMessage(prefix + cmp("Contact the developer of ", cError) + cmp(mod, cError, underlined = true) + cmp(" and ask them to add support for MLogs.", cError))
     }

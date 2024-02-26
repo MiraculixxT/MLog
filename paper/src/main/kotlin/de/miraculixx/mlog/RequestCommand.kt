@@ -7,30 +7,29 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.commandTree
 import dev.jorel.commandapi.kotlindsl.stringArgument
-import net.kyori.adventure.audience.Audience
 
 object RequestCommand : CommandResponses {
-    private const val type = "plugin"
-    private val confirmations: MutableMap<Audience, String> = mutableMapOf()
+    private const val TYPE = "plugin"
+    private val confirmations: MutableMap<String, String> = mutableMapOf()
     private val cooldown: MutableSet<String> = mutableSetOf()
 
     private val command = commandTree("mlogs") {
         anyExecutor { sender, _ ->
-            sender.responseInfo(type)
+            sender.target().responseInfo(TYPE)
         }
 
         stringArgument("plugin") {
             replaceSuggestions(ArgumentSuggestions.stringCollection { WebClient.logBackData.keys })
 
             anyExecutor { sender, args ->
-                sender.responseMod(args[0] as String, type)
+                sender.target().responseMod(args[0] as String, TYPE)
             }
 
             stringArgument("code") {
                 anyExecutor { sender, args ->
                     val plugin = args[0] as String
                     val code = args[1] as String
-                    sender.responseCode(plugin, code, cooldown, confirmations)
+                    sender.target().responseCode(plugin, code, cooldown, sender.name, confirmations)
                 }
             }
         }

@@ -1,8 +1,8 @@
 package de.miraculixx.mlog
 
+import de.miraculixx.kpaper.extensions.console
 import de.miraculixx.kpaper.extensions.server
 import de.miraculixx.mlog.utils.cmp
-import de.miraculixx.mlog.utils.plus
 import de.miraculixx.mlog.web.*
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -31,7 +31,7 @@ class APIImplementation : MLogAPI() {
         )
 
         WebClient.logBackData[pluginID] = payloadData
-        consoleAudience.sendMessage(prefix + cmp("Registered log sending for ${pluginInstance.name}"))
+        console.sendMessage(prefix + cmp("Registered log sending for ${pluginInstance.name}"))
         return true
     }
 
@@ -41,7 +41,7 @@ class APIImplementation : MLogAPI() {
         if (modID != modInstance.name) return false // check if the plugin ID matches the plugin name
 
         if (WebClient.logBackData.remove(modID) == null) return false // remove the log sending data
-        consoleAudience.sendMessage(prefix + cmp("Unregistered log sending for ${modInstance.name}"))
+        console.sendMessage(prefix + cmp("Unregistered log sending for ${modInstance.name}"))
         return true
     }
 }
