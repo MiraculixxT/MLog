@@ -1,4 +1,5 @@
 plugins {
+    kotlin("jvm")
     id("fabric-loom")
     id("io.github.dexman545.outlet")
 }
@@ -23,7 +24,7 @@ dependencies {
     //
     // Fabric configuration
     //
-    minecraft("com.mojang", "minecraft", gameVersion)
+    minecraft("com.mojang", "minecraft", "1.20.4")
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc", "fabric-loader", outlet.loaderVersion())
     modImplementation("net.fabricmc.fabric-api", "fabric-api", outlet.fapiVersion())

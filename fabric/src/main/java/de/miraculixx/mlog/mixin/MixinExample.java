@@ -1,4 +1,4 @@
-package de.miraculixx.template.mixin;
+package de.miraculixx.mlog.mixin;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
