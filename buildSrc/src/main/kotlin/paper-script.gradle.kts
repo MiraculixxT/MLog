@@ -1,3 +1,4 @@
+import gradle.kotlin.dsl.accessors._285dcef16d8875fee0ec91e18e07daf9.implementation
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
@@ -34,6 +35,10 @@ dependencies {
     }
 
     library("de.miraculixx:kpaper:1.+")
+
+    val ktorVersion = property("ktorVersion")
+    library("io.ktor:ktor-client-core:$ktorVersion")
+    library("io.ktor:ktor-client-cio:$ktorVersion")
 }
 
 tasks {

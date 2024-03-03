@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "${name}",
   "description": "${description}",
-  "author": "${author}",
+  "authors": [
+    "${author}"
+  ],
   "license": "${license}",
   "icon": "assets/mlog/icon.png",
   "contact": {

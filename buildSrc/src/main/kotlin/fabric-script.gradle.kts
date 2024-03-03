@@ -84,10 +84,11 @@ tasks.processResources {
                 "version" to version,
                 "name" to properties["projectName"] as String,
                 "description" to description,
-                "author" to properties["authors"] as String,
-                "license" to properties["license"] as String,
+                "author" to properties["author"] as String,
+                "license" to properties["licence"] as String,
                 "modrinth" to modrinthSlug,
                 "environment" to properties["environment"] as String,
+                "mcversion" to outlet.mcVersionRange
             )
         )
     }
