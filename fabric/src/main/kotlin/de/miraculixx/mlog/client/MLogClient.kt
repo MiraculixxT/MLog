@@ -12,8 +12,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.minecraft.client.Minecraft
 import java.util.logging.Logger
 
-object MLogClient : ClientModInitializer, CommandResponses {
-    private const val TYPE = "mod"
+class MLogClient : ClientModInitializer, CommandResponses {
+    private val TYPE = "mod"
     private lateinit var apiImplementation: APIImplementation
 
     private val confirmations: MutableMap<String, String> = mutableMapOf()
