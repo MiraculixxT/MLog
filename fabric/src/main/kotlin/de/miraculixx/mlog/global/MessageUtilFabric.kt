@@ -5,8 +5,8 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 
 fun RawMessage.toComponent(): Component {
-    return Component.literal(message)
-        .withColor(color.toInt(16))
+    var final = Component.literal(message)
+        .withColor(color.substring(1).toInt(16))
         .withStyle(
             *buildSet {
                 if (bold) add(ChatFormatting.BOLD)
@@ -15,7 +15,7 @@ fun RawMessage.toComponent(): Component {
                 if (underlined) add(ChatFormatting.UNDERLINE)
                 if (obfuscated) add(ChatFormatting.OBFUSCATED)
             }.toTypedArray()
-        ).apply {
-            followMessage?.toComponent()?.let { append(it) }
-        }
+        )
+    children.forEach { final = final.append(it.toComponent()) }
+    return final
 }

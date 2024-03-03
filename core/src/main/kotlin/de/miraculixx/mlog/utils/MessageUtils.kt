@@ -19,14 +19,16 @@ data class RawMessage(
     val strikethrough: Boolean = false,
     val obfuscated: Boolean = false,
     val isConsole: Boolean = false,
-    var followMessage: RawMessage? = null
+    val children: List<RawMessage> = mutableListOf()
 ) {
-    operator fun plus(other: RawMessage) = apply { followMessage = other }
+    operator fun plus(other: RawMessage): RawMessage {
+        return copy(children = children + listOf(other))
+    }
 
     fun toRaw(): String {
         return buildString {
             append(message)
-            followMessage?.toRaw()?.let { append(it) }
+            children.forEach { append(it.toRaw()) }
         }
     }
 }

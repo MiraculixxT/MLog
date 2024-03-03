@@ -8,7 +8,7 @@ import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 
 fun RawMessage.toAdventure(): Component {
-    return Component.text(message, TextColor.fromHexString(color)).apply {
+    var cmp = Component.text(message, TextColor.fromHexString(color)).apply {
         decorations(
             mapOf(
                 TextDecoration.BOLD to TextDecoration.State.byBoolean(bold),
@@ -18,8 +18,9 @@ fun RawMessage.toAdventure(): Component {
                 TextDecoration.OBFUSCATED to TextDecoration.State.byBoolean(obfuscated)
             )
         )
-        followMessage?.toAdventure()?.let { append(it) }
     }
+    children.forEach { cmp = cmp.append(it.toAdventure()) }
+    return cmp
 }
 
 fun Audience.sendMessage(message: RawMessage) {
@@ -31,4 +32,6 @@ fun RawMessage.send(target: Audience, console: Audience) {
     else target.sendMessage(this)
 }
 
-fun Audience.target() = { msg: RawMessage -> msg.send(this, console) }
+fun Audience.target() = { msg: RawMessage ->
+    msg.send(this, console)
+}
