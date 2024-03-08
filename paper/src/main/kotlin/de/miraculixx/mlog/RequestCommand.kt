@@ -15,7 +15,7 @@ object RequestCommand : CommandResponses {
 
     private val command = commandTree("mlog-server") {
         anyExecutor { sender, _ ->
-            sender.target().responseInfo(TYPE)
+            sender.target().responseInfo(TYPE, MLog.version, true)
         }
 
         stringArgument("plugin") {
