@@ -9,8 +9,10 @@ import de.miraculixx.mlog.web.WebClient
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import java.util.logging.Logger
+import kotlin.jvm.optionals.getOrNull
 
 class MLogClient : ClientModInitializer, CommandResponses {
     private val TYPE = "mod"
@@ -26,7 +28,7 @@ class MLogClient : ClientModInitializer, CommandResponses {
             dispatcher.register(
                 ClientCommandManager.literal("mlog")
                     .executes { ctx ->
-                        ctx.source.target().responseInfo(TYPE)
+                        ctx.source.target().responseInfo(TYPE, FabricLoader.getInstance().getModContainer("mlog").getOrNull()?.metadata?.version?.friendlyString ?: "unknown", false)
                         1
                     }.then(
                         ClientCommandManager.argument("plugin", StringArgumentType.string())

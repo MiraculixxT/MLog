@@ -13,7 +13,6 @@ class APIImplementation : MLogAPI() {
         INSTANCE = this
     }
 
-    @Suppress("DEPRECATION") // JavaPlugin#description is deprecated but perfectly fine for our plugin and allows back-porting to older versions
     override fun registerLogSending(pluginInstance: Any?, pluginID: String?, webhookURL: URL?, files: Set<File>?, zip: Boolean?): Boolean {
         if (pluginInstance == null || pluginID == null || webhookURL == null || files.isNullOrEmpty()) return false
         if (pluginInstance !is JavaPlugin) return false // check if the plugin instance is a JavaPlugin
@@ -27,7 +26,7 @@ class APIImplementation : MLogAPI() {
             files,
             webhookURL.toString(),
             zip ?: false,
-            LogPayloadData("unknown", -1L, MLOG.description.version, modData, serverData)
+            LogPayloadData("unknown", -1L, MLog.version, modData, serverData)
         )
 
         WebClient.logBackData[pluginID] = payloadData

@@ -11,11 +11,13 @@ import me.lucko.fabric.api.permissions.v0.Permissions
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.commands.Commands
 import java.util.logging.Logger
+import kotlin.jvm.optionals.getOrNull
 
-object MLogServer : DedicatedServerModInitializer, CommandResponses {
-    private const val TYPE = "mod"
+class MLogServer : DedicatedServerModInitializer, CommandResponses {
+    private val TYPE = "mod"
     private lateinit var apiImplementation: APIImplementation
 
     private val confirmations: MutableMap<String, String> = mutableMapOf()
@@ -33,7 +35,7 @@ object MLogServer : DedicatedServerModInitializer, CommandResponses {
             dispatcher.register(
                 Commands.literal("mlog-server")
                     .executes { ctx ->
-                        ctx.source.target().responseInfo(TYPE)
+                        ctx.source.target().responseInfo(TYPE, FabricLoader.getInstance().getModContainer("mlog").getOrNull()?.metadata?.version?.friendlyString ?: "unknown", true)
                         1
                     }.then(
                         Commands.argument("plugin", StringArgumentType.string())

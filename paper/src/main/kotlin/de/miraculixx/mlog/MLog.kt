@@ -4,11 +4,12 @@ import de.miraculixx.kpaper.main.KPaper
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import java.io.File
-import java.net.URL
+import java.net.URI
 
 class MLog : KPaper() {
     companion object {
         lateinit var INSTANCE: KPaper
+        lateinit var version: String
     }
 
     private lateinit var mLogAPIImplementation: APIImplementation
@@ -16,6 +17,7 @@ class MLog : KPaper() {
     override fun load() {
         INSTANCE = this
         LOGGER = logger
+        version = description.version
         CommandAPI.onLoad(CommandAPIBukkitConfig(this).silentLogs(true))
         configFolder = dataFolder
         mLogAPIImplementation = APIImplementation()
@@ -26,7 +28,13 @@ class MLog : KPaper() {
         CommandAPI.onEnable()
 
         // Register self logging
-        val success = MLogAPI.INSTANCE.registerLogSending(this, "mlog", URL("https://mlog.mutils.net/webhook/mlog/908621996009619477"), setOf(File("logs/latest.log")), false)
+        val success = MLogAPI.INSTANCE.registerLogSending(
+            this,
+            "mlog",
+            URI("https://mlog.mutils.net/webhook/mlog/908621996009619477").toURL(),
+            setOf(File("logs/latest.log")),
+            false
+        )
         if (!success) {
             logger.warning("Failed to register self logging")
         }
