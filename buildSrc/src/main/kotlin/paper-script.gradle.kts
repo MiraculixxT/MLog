@@ -37,8 +37,8 @@ dependencies {
     library("de.miraculixx:kpaper:1.+")
 
     val ktorVersion = property("ktorVersion")
-    library("io.ktor:ktor-client-core:$ktorVersion")
-    library("io.ktor:ktor-client-cio:$ktorVersion")
+    library("io.ktor:ktor-client-core-jvm:$ktorVersion")
+    library("io.ktor:ktor-client-cio-jvm:$ktorVersion")
 }
 
 tasks {

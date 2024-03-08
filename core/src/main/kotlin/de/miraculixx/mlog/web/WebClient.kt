@@ -9,6 +9,7 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -32,7 +33,7 @@ object WebClient {
     suspend fun sendMultipart(url: String, files: Set<File>, data: LogPayloadData): Response {
         return try {
             if (ktor == null) ktor = HttpClient(CIO)
-            val code = ktor?.post(url) {
+            val response = ktor?.post(url) {
                 setBody(
                     MultiPartFormDataContent(formData {
                         append("data", json.encodeToString(data))
@@ -44,13 +45,18 @@ object WebClient {
                         }
                     })
                 )
-            }?.status ?: return Response.INTERNAL_ERROR
-            LOGGER.sendMessage(prefix + cmp("Webhook endpoint responded with code $code"))
-            when {
+                header("Code", data.code)
+            }
+            val code = response?.status ?: return Response.INTERNAL_ERROR
+            LOGGER.sendMessage(cmp("Webhook endpoint responded with code $code"))
+            val type = when {
                 code.isSuccess() -> Response.SUCCESS
                 code == HttpStatusCode.Forbidden -> Response.INVALID_CODE //403
+                code == HttpStatusCode.TooManyRequests -> Response.RATE_LIMIT //429
                 else -> Response.API_ERROR
             }
+            if (type != Response.SUCCESS) LOGGER.sendMessage(cmp("Error: ${response.bodyAsText()}"))
+            type
         } catch (e: Exception) {
             e.printStackTrace()
             Response.INTERNAL_ERROR
@@ -58,6 +64,6 @@ object WebClient {
     }
 
     enum class Response {
-        SUCCESS, INVALID_CODE, API_ERROR, INTERNAL_ERROR
+        SUCCESS, INVALID_CODE, API_ERROR, RATE_LIMIT, INTERNAL_ERROR
     }
 }
