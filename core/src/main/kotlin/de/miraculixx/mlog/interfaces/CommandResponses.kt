@@ -10,15 +10,11 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 interface CommandResponses : LogPayloads {
-    fun Target.responseInfo(type: String) {
-        sendMessage(
-            prefix + cmp(
-                "Easily send important logs and $type configurations to their developers to speed up the debugging and support process.\n" +
-                        "You will receive a code from the developer which you can enter here to securely send all specified files.\n" +
-                        "Before sending, you can review the files and cancel the request at any time."
-            )
-        )
-        sendMessage(prefix + cmp("Usage: ") + cmp("/mlogs <$type> <code>", cMark))
+    fun Target.responseInfo(type: String, version: String, isServer: Boolean) {
+        sendMessage(prefix + cmp("Version: ") + cmp(version, cMark))
+        val link = "https://mutils.net/mlog"
+        sendMessage(prefix + cmp("Information: ") + cmp(link, cMark).link(link).hover(cmp("Click to open the MLog documentation")))
+        sendMessage(prefix + cmp("Usage: ") + cmp("/mlog${if (isServer) "-server" else ""} <$type> <code>", cMark))
     }
 
     fun Target.responseMod(mod: String, type: String) {
@@ -27,7 +23,7 @@ interface CommandResponses : LogPayloads {
             noSupport(mod)
             return
         }
-        sendMessage(prefix + cmp("The $type ", cHighlight) + cmp(mod, cMark) + cmp(" requests following files to be sent to their developers on support:"))
+        sendMessage(prefix + cmp("The $type ") + cmp(mod, cMark) + cmp(" requests following files on support:"))
         printFiles(data.files)
     }
 
@@ -39,6 +35,7 @@ interface CommandResponses : LogPayloads {
         }
 
         if (confirmations.containsKey(executor)) {
+            confirmations.remove(executor)
             sendMessage(prefix + cmp("Sending files to the developer..."))
             CoroutineScope(Dispatchers.Default).launch {
                 val finalFiles = prepareFiles(data.files, data.zip)
@@ -50,11 +47,12 @@ interface CommandResponses : LogPayloads {
 
                     WebClient.Response.INVALID_CODE -> sendMessage(prefix + cmp("The code you entered is invalid for $mod!", cError))
                     WebClient.Response.INTERNAL_ERROR -> sendMessage(prefix + cmp("An internal error occurred while sending the files! Please check console for more information", cError))
+                    WebClient.Response.RATE_LIMIT -> sendMessage(prefix + cmp("Please wait a moment before trying again.", cError))
                     WebClient.Response.API_ERROR -> sendMessage(prefix + cmp("The endpoint responded with an error. Please notify the developers about this behaviour!", cError))
                 }
             }
         } else {
-            sendMessage(prefix + cmp("You are about to send the following files to the developer of ") + cmp(mod, cMark) + cmp(":"))
+            sendMessage(prefix + cmp("Following files will be send to the developers of ") + cmp(mod, cMark) + cmp(":"))
             printFiles(data.files)
             sendMessage(prefix + cmp("Confirm by entering the command again!", cSuccess))
             confirmations[executor] = mod
@@ -66,7 +64,7 @@ interface CommandResponses : LogPayloads {
     }
 
     private fun Target.noSupport(mod: String) {
-        sendMessage(prefix + cmp("This mod does not support easy logs yet!", cError))
+        sendMessage(prefix + cmp("This mod does not support MLog yet!", cError))
         sendMessage(prefix + cmp("Contact the developer of ", cError) + cmp(mod, cError, underlined = true) + cmp(" and ask them to add support for MLogs.", cError))
     }
 }

@@ -17,7 +17,7 @@ interface LogPayloads {
         get() = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
     fun redactIPAddresses(source: File): File {
-        LOGGER.sendMessage(prefix + cmp("Redacting IP addresses from ${source.path}..."))
+        LOGGER.sendMessage(cmp("Redacting IP addresses from ${source.path}..."))
         val redactedTempFile = File(WebClient.tempFolder, "${source.nameWithoutExtension}.redacted.${source.extension}")
         redactedTempFile.bufferedWriter().use { writer ->
             source.forEachLine { line ->
@@ -28,7 +28,7 @@ interface LogPayloads {
     }
 
     fun prepareFiles(targets: Set<File>, zip: Boolean): Set<File> {
-        LOGGER.sendMessage(prefix + cmp("Preparing ${targets.size} files (zipped $zip) to send..."))
+        LOGGER.sendMessage(cmp("Preparing ${targets.size} files (zipped $zip) to send..."))
         val processedFiles = targets.mapNotNull { file ->
             val extension = file.extension
             when {
@@ -40,11 +40,11 @@ interface LogPayloads {
                 }
 
                 // Check if the file is in an allowed directory
-                isInAllowedDirectory(file.path) -> null
+                !isInAllowedDirectory(file.path) -> null
 
                 // Zip the file if it is a directory
                 file.isDirectory -> {
-                    LOGGER.sendMessage(prefix + cmp("Zipping folder ${file.path}..."))
+                    LOGGER.sendMessage(cmp("Zipping folder ${file.path}..."))
                     val tempZipFile = File(WebClient.tempFolder, "${file.name}.${getRandomID()}.zip")
                     Zipping.zipFolder(file, tempZipFile)
                     tempZipFile.apply { deleteOnExit() }
@@ -58,7 +58,7 @@ interface LogPayloads {
         }
 
         return if (zip) {
-            LOGGER.sendMessage(prefix + cmp("Zipping all ${processedFiles.size} files together..."))
+            LOGGER.sendMessage(cmp("Zipping all ${processedFiles.size} files together..."))
             val tempZipFile = File(WebClient.tempFolder, "${getRandomID()}.zip").apply { deleteOnExit() }
             Zipping.zipFiles(processedFiles, tempZipFile)
             setOf(tempZipFile)
@@ -66,7 +66,7 @@ interface LogPayloads {
     }
 
     suspend fun sendPayload(webhook: String, targets: Set<File>, payloadData: LogPayloadData): WebClient.Response {
-        LOGGER.sendMessage(prefix + cmp("Sending ${targets.size} files to $webhook..."))
+        LOGGER.sendMessage(cmp("Sending ${targets.size} files to $webhook..."))
         return WebClient.sendMultipart(webhook, targets, payloadData)
     }
 
