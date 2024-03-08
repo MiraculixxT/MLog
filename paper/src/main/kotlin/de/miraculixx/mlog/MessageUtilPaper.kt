@@ -1,11 +1,13 @@
 package de.miraculixx.mlog
 
-import de.miraculixx.kpaper.extensions.console
+import de.miraculixx.mlog.utils.MessageClick
 import de.miraculixx.mlog.utils.RawMessage
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Bukkit
 
 fun RawMessage.toAdventure(): Component {
     var cmp = Component.text(message, TextColor.fromHexString(color)).apply {
@@ -18,6 +20,14 @@ fun RawMessage.toAdventure(): Component {
                 TextDecoration.OBFUSCATED to TextDecoration.State.byBoolean(obfuscated)
             )
         )
+        clickAction.forEach { (action, value) ->
+            clickEvent(when (action) {
+                MessageClick.URL -> ClickEvent.openUrl(value)
+                MessageClick.RUN_COMMAND -> ClickEvent.runCommand(value)
+                MessageClick.SUGGEST_COMMAND -> ClickEvent.suggestCommand(value)
+            })
+        }
+        hover?.let { hoverEvent(asHoverEvent().value(it.toAdventure())) }
     }
     children.forEach { cmp = cmp.append(it.toAdventure()) }
     return cmp
@@ -33,5 +43,5 @@ fun RawMessage.send(target: Audience, console: Audience) {
 }
 
 fun Audience.target() = { msg: RawMessage ->
-    msg.send(this, console)
+    msg.send(this, Bukkit.getConsoleSender())
 }

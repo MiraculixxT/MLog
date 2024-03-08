@@ -19,11 +19,19 @@ data class RawMessage(
     val strikethrough: Boolean = false,
     val obfuscated: Boolean = false,
     val isConsole: Boolean = false,
-    val children: List<RawMessage> = mutableListOf()
+    val hover: RawMessage? = null,
+    val clickAction: Map<MessageClick, String> = mapOf(),
+    val children: List<RawMessage> = listOf()
 ) {
-    operator fun plus(other: RawMessage): RawMessage {
-        return copy(children = children + listOf(other))
-    }
+    operator fun plus(other: RawMessage) = copy(children = children + listOf(other))
+
+    fun link(url: String) = copy(clickAction = clickAction + (MessageClick.URL to url))
+
+    fun command(command: String) = copy(clickAction = clickAction + (MessageClick.RUN_COMMAND to command))
+
+    fun suggest(command: String) = copy(clickAction = clickAction + (MessageClick.SUGGEST_COMMAND to command))
+
+    fun hover(hover: RawMessage) = copy(hover = hover)
 
     fun toRaw(): String {
         return buildString {
@@ -45,4 +53,10 @@ fun Target.sendMessage(message: RawMessage) = invoke(message)
 
 fun Logger.sendMessage(message: RawMessage) {
     info(message.toRaw())
+}
+
+enum class MessageClick {
+    URL,
+    RUN_COMMAND,
+    SUGGEST_COMMAND
 }
